@@ -27,12 +27,12 @@ public class LoginView {
         root.getStyleClass().add("login-root");
 
         //Background
-        Image bgGif = new Image(getClass().getResource("/images/spacebg_5.gif").toExternalForm());
+        Image bgGif = new Image(getClass().getResource("/images/blackbg.jpg").toExternalForm());
         ImageView bgView = new ImageView(bgGif);
         bgView.setFitWidth(1920);
         bgView.setFitHeight(1080);
         bgView.setPreserveRatio(false);
-        bgView.setOpacity(0.5);
+        bgView.setOpacity(0.3);
 
         //Main HBox with left and right cards
         HBox mainBox = new HBox();
@@ -78,7 +78,7 @@ public class LoginView {
         Label title = new Label("Prestige Inventory Suites");
         title.getStyleClass().add("inner-title");
         title.styleProperty().bind(
-                innerBox.heightProperty().multiply(0.04).asString(
+                innerBox.heightProperty().multiply(0.035).asString(
                         "-fx-text-fill: #03DE82; -fx-font-weight: bold; -fx-font-family: Inter; -fx-font-size: %.0fpx;"
                 )
         );

@@ -1,5 +1,6 @@
 package com.example.ims001;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -16,7 +17,7 @@ public class ForgotPasswordView {
 
     private TextField txtUsername, txtResetCode, txtNewPasswordText;
     private PasswordField txtNewPassword;
-    private CheckBox chkShowPassword;
+    private CheckBox showPassword;
     private Label lblMessage;
 
     public ForgotPasswordView(MainApp mainApp) {
@@ -25,16 +26,18 @@ public class ForgotPasswordView {
         root = new StackPane();
         root.getStyleClass().add("login-root");
 
-        //background
-        Image bgGif = new Image(getClass().getResource("/images/spacebg_5.gif").toExternalForm());
+        // Background
+        Image bgGif = new Image(getClass().getResource("/images/blackbg.jpg").toExternalForm());
         ImageView bgView = new ImageView(bgGif);
         bgView.setFitWidth(1920);
         bgView.setFitHeight(1080);
         bgView.setPreserveRatio(false);
-        bgView.setOpacity(0.5);
+        bgView.setOpacity(0.3);
 
+        // Main HBox
         HBox mainBox = new HBox();
         mainBox.setAlignment(Pos.CENTER);
+        mainBox.setSpacing(0);
 
         VBox leftCard = createLeftCard();
         VBox rightCard = createForgotCard();
@@ -49,40 +52,33 @@ public class ForgotPasswordView {
         leftCard.setAlignment(Pos.CENTER);
         leftCard.getStyleClass().addAll("left-card", "frosted-glass");
 
-        //Inner black box
         StackPane innerBox = new StackPane();
         innerBox.getStyleClass().addAll("inner-black-box");
-
-        //innerBox responsive to leftCard size
         innerBox.prefWidthProperty().bind(leftCard.widthProperty().multiply(0.9));
         innerBox.prefHeightProperty().bind(leftCard.heightProperty().multiply(0.8));
         innerBox.setAlignment(Pos.BOTTOM_CENTER);
 
-        //Text container inside the black box
         VBox textContainer = new VBox(10);
         textContainer.setAlignment(Pos.BOTTOM_CENTER);
-        textContainer.setStyle("-fx-padding: 20;");
+        textContainer.setPadding(new Insets(20));
 
-        //Logo placeholder
-        Label logo = new Label(" *"); // placeholder logo
+        Label logo = new Label(" *");
         logo.getStyleClass().add("inner-title");
         logo.setStyle("-fx-text-fill: #03DE82; -fx-font-size: 100px; -fx-font-weight: bold;");
         StackPane.setAlignment(logo, Pos.TOP_LEFT);
-        StackPane.setMargin(logo, new javafx.geometry.Insets(15, 0, 0, 15)); // top-left margin
+        StackPane.setMargin(logo, new Insets(15, 0, 0, 15));
 
-        //Title
         Label title = new Label("Prestige Inventory Suites");
         title.getStyleClass().add("inner-title");
         title.styleProperty().bind(
-                innerBox.heightProperty().multiply(0.04).asString(
+                innerBox.heightProperty().multiply(0.035).asString(
                         "-fx-text-fill: #03DE82; -fx-font-weight: bold; -fx-font-family: Inter; -fx-font-size: %.0fpx;"
                 )
         );
         title.setMaxWidth(Double.MAX_VALUE);
-        VBox.setMargin(title, new javafx.geometry.Insets(0,0,0,10));
+        VBox.setMargin(title, new Insets(0, 0, 0, 10));
         title.setAlignment(Pos.CENTER_LEFT);
 
-        //Description
         Label description = new Label(
                 "This is a powerful inventory management app. " +
                         "Keep track of your stock effortlessly. " +
@@ -98,13 +94,8 @@ public class ForgotPasswordView {
         description.maxWidthProperty().bind(innerBox.widthProperty().multiply(0.85));
         description.setAlignment(Pos.CENTER);
 
-        // added title and description to text container
         textContainer.getChildren().addAll(title, description);
-
-        // added logo and text container to inner box
         innerBox.getChildren().addAll(logo, textContainer);
-
-        // added inner box ngek
         leftCard.getChildren().add(innerBox);
         VBox.setVgrow(innerBox, javafx.scene.layout.Priority.ALWAYS);
 
@@ -114,16 +105,16 @@ public class ForgotPasswordView {
     private VBox createForgotCard() {
         VBox rightCard = new VBox(12);
         rightCard.setPrefWidth(700);
-        rightCard.setPrefHeight(520);   // match Login/Register
-        rightCard.setAlignment(Pos.TOP_LEFT);
+        rightCard.setAlignment(Pos.CENTER_LEFT);
+        rightCard.setPadding(new Insets(40, 90, 40, 90));
         rightCard.getStyleClass().add("right-card");
 
         Label title = new Label("Forgot Password");
         title.getStyleClass().add("title");
 
-        Label subtitle = new Label("Reset your password using your permanent reset code.");
-        subtitle.getStyleClass().add("title_2");
-        subtitle.setWrapText(true);
+        Label quote = new Label("Reset your password using your permanent reset code.");
+        quote.getStyleClass().add("title_2");
+        quote.setWrapText(true);
 
         Label userLbl = new Label("Username");
         userLbl.getStyleClass().add("title_3");
@@ -158,20 +149,23 @@ public class ForgotPasswordView {
 
         txtNewPassword.textProperty().bindBidirectional(txtNewPasswordText.textProperty());
 
-        chkShowPassword = new CheckBox("Show Password");
-        chkShowPassword.getStyleClass().add("pass-button");
-        chkShowPassword.setOnAction(e -> {
-            boolean show = chkShowPassword.isSelected();
+        // Show password checkbox on its own row
+        showPassword = new CheckBox("Show Password");
+        showPassword.getStyleClass().add("pass-button");
+        showPassword.setOnAction(e -> {
+            boolean show = showPassword.isSelected();
             txtNewPassword.setVisible(!show);
             txtNewPassword.setManaged(!show);
             txtNewPasswordText.setVisible(show);
             txtNewPasswordText.setManaged(show);
         });
 
+        // Reset button
         Button btnReset = new Button("Reset Password");
         btnReset.getStyleClass().add("primary-button");
         btnReset.setOnAction(e -> handleReset());
 
+        // Back to Login button
         Button btnBack = new Button("Back to Login");
         btnBack.getStyleClass().add("secondary-button");
         btnBack.setOnAction(e -> mainApp.showLoginView());
@@ -179,9 +173,10 @@ public class ForgotPasswordView {
         lblMessage = new Label();
         lblMessage.getStyleClass().add("message-label");
 
+        // Add all elements vertically like LoginView
         rightCard.getChildren().addAll(
                 title,
-                subtitle,
+                quote,
                 userLbl,
                 txtUsername,
                 codeLbl,
@@ -189,21 +184,20 @@ public class ForgotPasswordView {
                 passLbl,
                 txtNewPassword,
                 txtNewPasswordText,
-                chkShowPassword,
-                btnReset,
-                btnBack,
+                showPassword,  // checkbox row
+                btnReset,      // primary button
+                btnBack,       // secondary button
                 lblMessage
         );
 
         return rightCard;
     }
 
-    //LOGIC
-
+    // LOGIC
     private void handleReset() {
         String username = txtUsername.getText();
         String resetCode = txtResetCode.getText();
-        String newPassword = chkShowPassword.isSelected()
+        String newPassword = showPassword.isSelected()
                 ? txtNewPasswordText.getText()
                 : txtNewPassword.getText();
 
