@@ -219,11 +219,15 @@ public class LoginView {
         if (UserDAO.login(username, password)) {
             lblMessage.setText("Login successful!");
             lblMessage.getStyleClass().setAll("message-success");
+
+            Session.setUsername(username); // ✅ ADD THIS
             mainApp.showDashboardView(username);
+
         } else {
             lblMessage.setText("Invalid username or password.");
             lblMessage.getStyleClass().setAll("message-error");
         }
+
     }
 
     public Parent getView() {
