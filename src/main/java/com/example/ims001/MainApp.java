@@ -65,18 +65,21 @@ public class MainApp extends Application {
         Session.setUsername(username);
         DashboardView view = new DashboardView(this, username);
         setRoot(view.getView());
+        ThemeManager.apply(primaryStage.getScene());
     }
 
     // ================= INVENTORY =================
     public void showInventoryView() {
         InventoryView view = new InventoryView(this);
         setRoot(view.getView());
+        ThemeManager.apply(primaryStage.getScene());
     }
 
     // ================= HISTORY =================
     public void showHistoryView() {
         HistoryView view = new HistoryView(this);
         setRoot(view.getView());
+        ThemeManager.apply(primaryStage.getScene());
     }
 
     public static void main(String[] args) {

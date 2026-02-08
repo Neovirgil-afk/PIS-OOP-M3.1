@@ -1,0 +1,70 @@
+/* ===== Light Mode ===== */
+.root {
+    -fx-font-family: "Segoe UI", Arial;
+    -fx-base: #f6f7fb;
+    -fx-background: #f6f7fb;
+    -fx-control-inner-background: #ffffff;
+    -fx-text-fill: #1e1e1e;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #1e1e1e;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: rgba(0,0,0,0.06);
+    -fx-text-fill: #1e1e1e;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.08);
+    -fx-padding: 8 14 8 14;
+}
+
+.button:hover {
+    -fx-background-color: rgba(0,0,0,0.10);
+}
+
+.button:pressed {
+    -fx-background-color: rgba(0,0,0,0.14);
+}
+
+/* Inputs */
+.text-field, .password-field, .combo-box, .date-picker {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1e1e1e;
+    -fx-prompt-text-fill: rgba(0,0,0,0.45);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(0,0,0,0.12);
+}
+
+/* Table */
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(0,0,0,0.10);
+    -fx-border-radius: 12;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: rgba(3, 222, 130, 0.20);
+}
+
+/* Tabs */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: rgba(0,0,0,0.03);
+}
+
+.separator .line {
+    -fx-border-color: rgba(0,0,0,0.12);
+}

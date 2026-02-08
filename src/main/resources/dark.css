@@ -1,0 +1,99 @@
+/* ===== Dark Mode ===== */
+.root {
+    -fx-font-family: "Segoe UI", Arial;
+    -fx-base: #0f1117;
+    -fx-background: #0f1117;
+    -fx-control-inner-background: #151a22;
+    -fx-text-fill: #e6e6e6;
+}
+
+/* Containers */
+.border-pane, .vbox, .hbox, .stack-pane, .pane, .anchor-pane {
+    -fx-background-color: transparent;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #e6e6e6;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-padding: 8 14 8 14;
+}
+
+.button:hover {
+    -fx-background-color: rgba(255,255,255,0.16);
+}
+
+.button:pressed {
+    -fx-background-color: rgba(255,255,255,0.20);
+}
+
+/* Inputs */
+.text-field, .password-field, .combo-box, .date-picker {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: rgba(255,255,255,0.45);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.12);
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #ffffff;
+}
+
+/* Table */
+.table-view {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 32px;
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-background-color: transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-background-color: #e6e6e6;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: rgba(255,255,255,0.06);
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: rgba(3, 222, 130, 0.18);
+}
+
+/* Tabs */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: rgba(255,255,255,0.06);
+}
+
+.tab-pane .tab {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.tab-pane .tab-label {
+    -fx-text-fill: #e6e6e6;
+}
+
+/* Separators */
+.separator .line {
+    -fx-border-color: rgba(255,255,255,0.12);
+}
