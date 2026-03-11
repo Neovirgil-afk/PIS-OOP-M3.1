@@ -1,0 +1,28 @@
+.table-view .column-header .label {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-max-width: infinity;
+}
+
+.inventory-layout {
+    -fx-spacing: 16;
+}
+
+.inventory-form-grid {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+.inventory-actions {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.inventory-status {
+    -fx-text-fill: #374151;
+    -fx-font-weight: bold;
+}
+
+.app-root.dark-view .inventory-status {
+    -fx-text-fill: #cbd5e1;
+}

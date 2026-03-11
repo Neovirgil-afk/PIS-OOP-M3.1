@@ -1,0 +1,36 @@
+.dashboard-body {
+    -fx-spacing: 20;
+}
+
+.dashboard-left {
+    -fx-pref-width: 700;
+}
+
+.dashboard-right {
+    -fx-pref-width: 340;
+    -fx-max-width: 360;
+}
+
+.dashboard-header-row {
+    -fx-spacing: 18;
+    -fx-alignment: center-left;
+}
+
+.dashboard-left-header {
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+}
+
+.dashboard-summary-box {
+    -fx-alignment: center-right;
+}
+
+.cart-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.app-root.dark-view .cart-title {
+    -fx-text-fill: #e2e8f0;
+}

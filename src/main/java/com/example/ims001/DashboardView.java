@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -16,30 +15,25 @@ public class DashboardView {
 
     private final MainApp mainApp;
     private final String username;
-    private final BorderPane root = new BorderPane();
 
-    // Stock summary (inventory health)
+    private BorderPane root;
+
     private Label lblSummary;
     private Label lblWarn;
 
-    // Left: products
     private final TableView<Product> productsTable = new TableView<>();
     private final ObservableList<Product> productsData = FXCollections.observableArrayList();
 
-    // Right: cart
     private final TableView<CartItem> cartTable = new TableView<>();
     private final ObservableList<CartItem> cartData = FXCollections.observableArrayList();
 
-    // State
     private final Map<Integer, CartItem> cartMap = new HashMap<>();
     private final Map<Integer, Boolean> selectedMap = new HashMap<>();
 
-    // Totals
     private Label lblItemsCount;
     private Label lblTotal;
     private Label lblMsg;
 
-    // Search
     private TextField txtSearch;
 
     public DashboardView(MainApp mainApp, String username) {
@@ -50,80 +44,70 @@ public class DashboardView {
     }
 
     private void buildUI() {
-        // =========================
-        // TOP BAR
-        // =========================
-        Label lblTopTitle = new Label("Dashboard");
-        lblTopTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-        lblTopTitle.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(lblTopTitle, Priority.ALWAYS);
+        VBox page = new VBox(16);
 
-        Button btnInventory = new Button("Inventory");
-        btnInventory.setOnAction(e -> mainApp.showInventoryView());
+        HBox headerRow = buildHeaderRow();
+        HBox body = buildBody();
 
-        Button btnHistory = new Button("History");
-        btnHistory.setOnAction(e -> mainApp.showHistoryView());
+        page.getChildren().addAll(headerRow, body);
+        VBox.setVgrow(body, Priority.ALWAYS);
 
-        Button btnTheme = new Button(ThemeManager.isDarkMode() ? "Light Mode" : "Dark Mode");
-        btnTheme.setOnAction(e -> {
-            // get current scene and toggle
-            ThemeManager.toggle(root.getScene());
-            btnTheme.setText(ThemeManager.isDarkMode() ? "Light Mode" : "Dark Mode");
-        });
+        AppShell shell = new AppShell(mainApp, username, "home", "Home", page);
+        root = shell.getRoot();
 
-
-        Button btnLogout = new Button("Logout");
-        btnLogout.setOnAction(e -> mainApp.showLoginView());
-
-        HBox topBar = new HBox(10, lblTopTitle, btnInventory, btnHistory, btnTheme, btnLogout);
-        topBar.setPadding(new Insets(12, 15, 12, 15));
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        root.setTop(topBar);
-
-        // =========================
-        // SUMMARY (inventory health)
-        // =========================
-        Label lblUser = new Label("Logged in as: " + username);
-        lblUser.setStyle("-fx-font-size: 14px;");
-
-        lblSummary = new Label("Loading summary...");
-        lblSummary.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-
-        lblWarn = new Label("");
-        lblWarn.setStyle("-fx-font-weight: bold;");
-
-        VBox summaryBox = new VBox(6, lblUser, lblSummary, lblWarn);
-        summaryBox.setPadding(new Insets(10));
-        summaryBox.setAlignment(Pos.CENTER_LEFT);
-
-        // =========================
-        // TRANSACTIONS AREA
-        // =========================
-        VBox leftProducts = buildProductsPane();
-        VBox rightCart = buildCartPane();
-
-        HBox transactionsArea = new HBox(15, leftProducts, rightCart);
-        transactionsArea.setPadding(new Insets(10));
-        HBox.setHgrow(leftProducts, Priority.ALWAYS);
-
-        VBox center = new VBox(12, summaryBox, new Separator(), transactionsArea);
-        center.setPadding(new Insets(15));
-        root.setCenter(center);
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/app-shell.css")).toExternalForm());
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/dashboard-view.css")).toExternalForm());
     }
 
-    // =========================
-    // PRODUCTS PANE (left)
-    // =========================
-    private VBox buildProductsPane() {
-        Label title = new Label("Products");
-        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+    private HBox buildHeaderRow() {
+        Label title = new Label("Home");
+        title.getStyleClass().add("pill-title");
 
+        Button btnSell = new Button("Sell");
+        btnSell.getStyleClass().add("primary-pill");
+
+        HBox left = new HBox(12, title, btnSell);
+        left.getStyleClass().add("dashboard-left-header");
+
+        lblSummary = new Label("Loading summary...");
+        lblSummary.getStyleClass().add("label-muted");
+
+        lblWarn = new Label("");
+
+        VBox summaryBox = new VBox(3, lblSummary, lblWarn);
+        summaryBox.getStyleClass().add("dashboard-summary-box");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox row = new HBox(18, left, spacer, summaryBox);
+        row.getStyleClass().add("dashboard-header-row");
+        return row;
+    }
+
+    private HBox buildBody() {
+        VBox left = buildProductsPane();
+        VBox right = buildCartPane();
+
+        left.getStyleClass().addAll("card", "dashboard-left");
+        right.getStyleClass().addAll("card", "dashboard-right");
+
+        HBox body = new HBox(20, left, right);
+        body.getStyleClass().add("dashboard-body");
+        HBox.setHgrow(left, Priority.ALWAYS);
+        VBox.setVgrow(left, Priority.ALWAYS);
+
+        return body;
+    }
+
+    private VBox buildProductsPane() {
         txtSearch = new TextField();
-        txtSearch.setPromptText("Search product...");
+        txtSearch.setPromptText("Search");
+        txtSearch.getStyleClass().add("text-input");
         txtSearch.textProperty().addListener((obs, oldV, newV) -> applySearch(newV));
 
         TableColumn<Product, String> colSelect = new TableColumn<>("✓");
-        colSelect.setPrefWidth(50);
+        colSelect.setPrefWidth(45);
         colSelect.setCellFactory(tc -> new TableCell<>() {
             private final CheckBox cb = new CheckBox();
 
@@ -182,29 +166,27 @@ public class DashboardView {
 
         TableColumn<Product, String> colName = new TableColumn<>("Name");
         colName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
-        colName.setPrefWidth(220);
 
         TableColumn<Product, String> colCat = new TableColumn<>("Category");
         colCat.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCategory()));
-        colCat.setPrefWidth(160);
 
         TableColumn<Product, Integer> colStock = new TableColumn<>("Stock");
         colStock.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getQuantity()).asObject());
-        colStock.setPrefWidth(80);
 
         TableColumn<Product, String> colPrice = new TableColumn<>("Price");
         colPrice.setCellValueFactory(c -> new SimpleStringProperty(String.format("₱%.2f", c.getValue().getPrice())));
-        colPrice.setPrefWidth(90);
 
         TableColumn<Product, String> colQty = new TableColumn<>("Qty");
-        colQty.setPrefWidth(180);
+        colQty.setPrefWidth(140);
         colQty.setCellFactory(tc -> new TableCell<>() {
             private final Button minus = new Button("-");
             private final Button plus = new Button("+");
             private final Label qtyLbl = new Label("0");
-            private final HBox box = new HBox(8, minus, qtyLbl, plus);
+            private final HBox box = new HBox(6, minus, qtyLbl, plus);
 
             {
+                minus.getStyleClass().add("qty-btn");
+                plus.getStyleClass().add("qty-btn");
                 box.setAlignment(Pos.CENTER);
 
                 minus.setOnAction(e -> {
@@ -283,49 +265,34 @@ public class DashboardView {
         productsTable.getColumns().setAll(colSelect, colName, colCat, colStock, colPrice, colQty);
         productsTable.setItems(productsData);
         productsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        productsTable.setPrefHeight(520);
+        VBox.setVgrow(productsTable, Priority.ALWAYS);
 
-        VBox left = new VBox(10, title, txtSearch, productsTable);
-        left.setPadding(new Insets(12));
-        left.setStyle("""
-                -fx-background-color: rgba(255,255,255,0.06);
-                -fx-background-radius: 12;
-                -fx-border-color: rgba(255,255,255,0.12);
-                -fx-border-radius: 12;
-                """);
-
-        return left;
+        return new VBox(10, txtSearch, productsTable);
     }
 
-    // =========================
-    // CART PANE (right)
-    // =========================
     private VBox buildCartPane() {
         Label title = new Label("Cart Summary");
-        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        title.getStyleClass().add("cart-title");
 
         TableColumn<CartItem, String> colName = new TableColumn<>("Product");
         colName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
-        colName.setPrefWidth(220);
 
         TableColumn<CartItem, String> colQty = new TableColumn<>("Qty");
         colQty.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().getQuantity())));
-        colQty.setPrefWidth(60);
 
         TableColumn<CartItem, String> colUnit = new TableColumn<>("Price");
         colUnit.setCellValueFactory(c -> new SimpleStringProperty(String.format("₱%.2f", c.getValue().getUnitPrice())));
-        colUnit.setPrefWidth(80);
 
         TableColumn<CartItem, String> colLine = new TableColumn<>("Total");
         colLine.setCellValueFactory(c -> new SimpleStringProperty(String.format("₱%.2f", c.getValue().getLineTotal())));
-        colLine.setPrefWidth(90);
 
         TableColumn<CartItem, String> colRemove = new TableColumn<>("X");
-        colRemove.setPrefWidth(80);
+        colRemove.setPrefWidth(90);
         colRemove.setCellFactory(tc -> new TableCell<>() {
             private final Button btn = new Button("Remove");
 
             {
+                btn.getStyleClass().add("action-btn");
                 btn.setOnAction(e -> {
                     CartItem ci = getCurrentItem();
                     if (ci == null) return;
@@ -352,49 +319,35 @@ public class DashboardView {
         cartTable.getColumns().setAll(colName, colQty, colUnit, colLine, colRemove);
         cartTable.setItems(cartData);
         cartTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        cartTable.setPrefHeight(420);
+        VBox.setVgrow(cartTable, Priority.ALWAYS);
 
-        lblItemsCount = new Label("Items: 0");
-        lblTotal = new Label("Total: ₱0.00");
-        lblTotal.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        lblItemsCount = new Label("ITEM: 0");
+        lblItemsCount.getStyleClass().add("label-muted");
 
-        Button btnCheckout = new Button("Confirm Sale");
+        lblTotal = new Label("TOTAL: ₱0.00");
+        lblTotal.getStyleClass().add("label-muted");
+
+        Button btnCheckout = new Button("CONFIRM SALE");
+        btnCheckout.getStyleClass().add("action-btn");
         btnCheckout.setMaxWidth(Double.MAX_VALUE);
         btnCheckout.setOnAction(e -> checkout());
 
-        Button btnClear = new Button("Clear Cart");
+        Button btnClear = new Button("CLEAR CART");
+        btnClear.getStyleClass().add("action-btn");
         btnClear.setMaxWidth(Double.MAX_VALUE);
-        btnClear.setOnAction(e -> clearCart());
+        btnClear.setOnAction(e -> {
+            clearCart();
+            lblMsg.getStyleClass().removeAll("label-warning");
+            if (!lblMsg.getStyleClass().contains("label-success")) lblMsg.getStyleClass().add("label-success");
+            lblMsg.setText("Cart cleared ✅");
+        });
 
         lblMsg = new Label("");
-        lblMsg.setStyle("-fx-font-size: 13px;");
 
-        VBox right = new VBox(10,
-                title,
-                cartTable,
-                new Separator(),
-                lblItemsCount,
-                lblTotal,
-                btnCheckout,
-                btnClear,
-                lblMsg
-        );
-
-        right.setPadding(new Insets(12));
-        right.setPrefWidth(440);
-        right.setStyle("""
-                -fx-background-color: rgba(255,255,255,0.06);
-                -fx-background-radius: 12;
-                -fx-border-color: rgba(255,255,255,0.12);
-                -fx-border-radius: 12;
-                """);
-
-        return right;
+        VBox box = new VBox(10, title, cartTable, new Separator(), lblItemsCount, lblTotal, btnCheckout, btnClear, lblMsg);
+        return box;
     }
 
-    // =========================
-    // LOGIC
-    // =========================
     private void applySearch(String query) {
         String q = (query == null) ? "" : query.trim().toLowerCase();
         if (q.isEmpty()) {
@@ -427,8 +380,8 @@ public class DashboardView {
             total += ci.getLineTotal();
         }
 
-        lblItemsCount.setText("Items: " + itemCount);
-        lblTotal.setText(String.format("Total: ₱%.2f", total));
+        lblItemsCount.setText("ITEM: " + itemCount);
+        lblTotal.setText(String.format("TOTAL: ₱%.2f", total));
     }
 
     private void clearCart() {
@@ -437,14 +390,12 @@ public class DashboardView {
         cartData.clear();
         updateTotals();
         productsTable.refresh();
-
-        lblMsg.setStyle("-fx-text-fill: #03DE82; -fx-font-weight: bold;");
-        lblMsg.setText("Cart cleared ✅");
     }
 
     private void checkout() {
         if (cartData.isEmpty()) {
-            lblMsg.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+            lblMsg.getStyleClass().removeAll("label-success");
+            if (!lblMsg.getStyleClass().contains("label-warning")) lblMsg.getStyleClass().add("label-warning");
             lblMsg.setText("Cart is empty.");
             return;
         }
@@ -460,17 +411,19 @@ public class DashboardView {
         boolean ok = ProductDAO.sellCart(new ArrayList<>(cartData), username);
 
         if (!ok) {
-            lblMsg.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
-            lblMsg.setText("Checkout failed (stock may have changed). Refreshing products...");
+            lblMsg.getStyleClass().removeAll("label-success");
+            if (!lblMsg.getStyleClass().contains("label-warning")) lblMsg.getStyleClass().add("label-warning");
+            lblMsg.setText("Checkout failed. Refreshing products...");
             refreshProductsOnly();
             return;
         }
 
-        lblMsg.setStyle("-fx-text-fill: #03DE82; -fx-font-weight: bold;");
-        lblMsg.setText("Checkout success ✅");
-
         clearCart();
         refreshAll();
+
+        lblMsg.getStyleClass().removeAll("label-warning");
+        if (!lblMsg.getStyleClass().contains("label-success")) lblMsg.getStyleClass().add("label-success");
+        lblMsg.setText("Checkout success ✅");
     }
 
     private void refreshSummary() {
@@ -483,20 +436,23 @@ public class DashboardView {
                         " | Out: " + s.getOutStock()
         );
 
+        lblWarn.getStyleClass().removeAll("label-warning", "label-success");
         if (s.getOutStock() > 0 || s.getLowStock() > 0) {
-            lblWarn.setText("⚠ Warning: Some items are LOW/OUT OF STOCK");
-            lblWarn.setStyle("-fx-text-fill: orange; -fx-font-weight: bold;");
+            lblWarn.setText("⚠ Some items are LOW/OUT OF STOCK");
+            lblWarn.getStyleClass().add("label-warning");
         } else {
             lblWarn.setText("All stock healthy ✅");
-            lblWarn.setStyle("-fx-text-fill: #03DE82; -fx-font-weight: bold;");
+            lblWarn.getStyleClass().add("label-success");
         }
     }
 
     private void refreshProductsOnly() {
         String q = (txtSearch == null) ? "" : txtSearch.getText();
-        if (q == null || q.isBlank()) productsData.setAll(ProductDAO.getAllByNameAsc());
-        else applySearch(q);
-
+        if (q == null || q.isBlank()) {
+            productsData.setAll(ProductDAO.getAllByNameAsc());
+        } else {
+            applySearch(q);
+        }
         productsTable.refresh();
     }
 

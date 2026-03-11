@@ -6,12 +6,13 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class MainApp extends Application {
 
     private Stage primaryStage;
     private Scene mainScene;
 
-    // Figma-based size
     private static final int WIDTH = 1100;
     private static final int HEIGHT = 700;
 
@@ -20,23 +21,19 @@ public class MainApp extends Application {
         this.primaryStage = stage;
         primaryStage.setTitle("Prestige Inventory Suites");
 
-        //  Create ONE scene only
         mainScene = new Scene(new StackPane(), WIDTH, HEIGHT);
 
-        //  Load CSS once globally
         mainScene.getStylesheets().add(
-                getClass().getResource("/styles.css").toExternalForm()
+                Objects.requireNonNull(getClass().getResource("/styles.css")).toExternalForm()
         );
 
         primaryStage.setScene(mainScene);
 
-        // show first view
         showLoginView();
 
         primaryStage.show();
     }
 
-    // ✅ helper: swap root without creating new Scene
     private void setRoot(Parent root) {
         mainScene.setRoot(root);
     }
@@ -64,6 +61,25 @@ public class MainApp extends Application {
     public void showDashboardView(String username) {
         Session.setUsername(username);
         DashboardView view = new DashboardView(this, username);
+        setRoot(view.getView());
+        ThemeManager.apply(primaryStage.getScene());
+    }
+
+    public void showDashboardView() {
+        String username = Session.getUsername();
+        if (username == null || username.isBlank()) {
+            showLoginView();
+            return;
+        }
+
+        DashboardView view = new DashboardView(this, username);
+        setRoot(view.getView());
+        ThemeManager.apply(primaryStage.getScene());
+    }
+
+    // ================= PROFILE =================
+    public void showProfileView() {
+        ProfileView view = new ProfileView(this);
         setRoot(view.getView());
         ThemeManager.apply(primaryStage.getScene());
     }

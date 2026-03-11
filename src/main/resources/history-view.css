@@ -1,0 +1,33 @@
+.history-toolbar {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.history-tabpane {
+    -fx-background-color: transparent;
+}
+
+.history-tabpane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.history-tabpane .tab {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.history-tabpane .tab:selected {
+    -fx-background-color: #ddf7fb;
+}
+
+.history-tabpane .tab-label {
+    -fx-font-weight: bold;
+}
+
+.app-root.dark-view .history-tabpane .tab {
+    -fx-background-color: #1e293b;
+}
+
+.app-root.dark-view .history-tabpane .tab:selected {
+    -fx-background-color: #183544;
+}

@@ -163,10 +163,10 @@ public class ProductDAO {
     }
 
     // =========================
-    // SELL CART (Foodpanda checkout)
+    // SELL CART
     // - Updates stock safely
     // - Writes sales + sales_items
-    // - Writes history logs (optional but nice)
+    // - Writes history logs
     // =========================
     public static boolean sellCart(List<CartItem> cart, String username) {
         if (cart == null || cart.isEmpty()) return false;
@@ -198,7 +198,6 @@ public class ProductDAO {
             con = DB.getConnection();
             con.setAutoCommit(false);
 
-            // totals
             int totalItems = 0;
             double totalAmount = 0.0;
 
@@ -210,6 +209,8 @@ public class ProductDAO {
                 totalItems += item.getQuantity();
                 totalAmount += item.getLineTotal();
             }
+
+            Integer userId = UserDAO.getUserIdByUsername(username);
 
             // 1) Insert sales header and get sale_id
             int saleId;
@@ -233,7 +234,6 @@ public class ProductDAO {
                 int productId = item.getProductId();
                 int qty = item.getQuantity();
 
-                // safe update (prevents negative stock)
                 int updated;
                 try (PreparedStatement ps = con.prepareStatement(safeUpdate)) {
                     ps.setInt(1, qty);
@@ -244,7 +244,7 @@ public class ProductDAO {
 
                 if (updated == 0) {
                     con.rollback();
-                    return false; // stock changed / not enough
+                    return false;
                 }
 
                 // sales_items row
@@ -258,10 +258,14 @@ public class ProductDAO {
                     ps.executeUpdate();
                 }
 
-                // history log (optional)
-                String details = "User: " + username +
-                        " | Type: Stock Out | Purpose: SALE | Qty: " + qty +
-                        " | SaleID: " + saleId;
+                // history log with user info
+                String details =
+                        "Handled By: " + username +
+                                " | User ID: " + (userId != null ? userId : "N/A") +
+                                " | Type: Stock Out" +
+                                " | Purpose: SALE" +
+                                " | Qty: " + qty +
+                                " | SaleID: " + saleId;
 
                 try (PreparedStatement ps = con.prepareStatement(insertHistory)) {
                     ps.setString(1, "STOCK_OUT_SALE");
