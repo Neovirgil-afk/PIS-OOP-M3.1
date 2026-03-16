@@ -21,6 +21,13 @@ public class DashboardView {
     private Label lblSummary;
     private Label lblWarn;
 
+    private Label lblGreeting;
+    private Label lblOverviewSub;
+    private Label lblTotalValue;
+    private Label lblInStockValue;
+    private Label lblLowStockValue;
+    private Label lblOutStockValue;
+
     private final TableView<Product> productsTable = new TableView<>();
     private final ObservableList<Product> productsData = FXCollections.observableArrayList();
 
@@ -45,18 +52,84 @@ public class DashboardView {
 
     private void buildUI() {
         VBox page = new VBox(16);
+        page.getStyleClass().add("dashboard-page");
 
+        VBox overviewSection = buildOverviewSection();
         HBox headerRow = buildHeaderRow();
-        HBox body = buildBody();
+        VBox productsPane = buildProductsSection();
+        VBox cartPane = buildCartPane();
 
-        page.getChildren().addAll(headerRow, body);
-        VBox.setVgrow(body, Priority.ALWAYS);
+        page.getChildren().addAll(
+                overviewSection,
+                headerRow,
+                productsPane,
+                cartPane
+        );
 
-        AppShell shell = new AppShell(mainApp, username, "home", "Home", page);
+        ScrollPane pageScroll = new ScrollPane(page);
+        pageScroll.setFitToWidth(true);
+        pageScroll.setFitToHeight(false);
+        pageScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pageScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        pageScroll.setPannable(true);
+        pageScroll.getStyleClass().add("dashboard-scroll");
+
+        AppShell shell = new AppShell(mainApp, username, "home", "Home", pageScroll);
         root = shell.getRoot();
 
-        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/app-shell.css")).toExternalForm());
-        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/dashboard-view.css")).toExternalForm());
+        root.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/app-shell.css")).toExternalForm()
+        );
+        root.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("/dashboard-view.css")).toExternalForm()
+        );
+    }
+
+    private VBox buildOverviewSection() {
+        lblGreeting = new Label("Good day 👋 " + username + "!");
+        lblGreeting.getStyleClass().add("overview-title");
+
+        lblOverviewSub = new Label("Here is your overview report.");
+        lblOverviewSub.getStyleClass().add("overview-subtitle");
+
+        VBox greetingBox = new VBox(4, lblGreeting, lblOverviewSub);
+        greetingBox.getStyleClass().addAll("card", "overview-banner");
+
+        lblTotalValue = new Label("0");
+        VBox totalCard = createStatCard("Total", lblTotalValue);
+
+        lblInStockValue = new Label("0");
+        VBox inStockCard = createStatCard("In Stock", lblInStockValue);
+
+        lblLowStockValue = new Label("0");
+        VBox lowStockCard = createStatCard("Low Stock", lblLowStockValue);
+
+        lblOutStockValue = new Label("0");
+        VBox outStockCard = createStatCard("Out of Stock", lblOutStockValue);
+
+        HBox statsRow = new HBox(14, totalCard, inStockCard, lowStockCard, outStockCard);
+        statsRow.getStyleClass().add("overview-stats-row");
+
+        HBox.setHgrow(totalCard, Priority.ALWAYS);
+        HBox.setHgrow(inStockCard, Priority.ALWAYS);
+        HBox.setHgrow(lowStockCard, Priority.ALWAYS);
+        HBox.setHgrow(outStockCard, Priority.ALWAYS);
+
+        VBox wrap = new VBox(14, greetingBox, statsRow);
+        wrap.getStyleClass().add("overview-wrap");
+        return wrap;
+    }
+
+    private VBox createStatCard(String titleText, Label valueLabel) {
+        Label title = new Label(titleText);
+        title.getStyleClass().add("overview-stat-title");
+
+        valueLabel.getStyleClass().add("overview-stat-value");
+
+        VBox card = new VBox(10, title, valueLabel);
+        card.getStyleClass().addAll("card", "overview-stat-card");
+        card.setMaxWidth(Double.MAX_VALUE);
+        return card;
     }
 
     private HBox buildHeaderRow() {
@@ -65,6 +138,7 @@ public class DashboardView {
 
         Button btnSell = new Button("Sell");
         btnSell.getStyleClass().add("primary-pill");
+        btnSell.setDisable(true); // static / non-clickable
 
         HBox left = new HBox(12, title, btnSell);
         left.getStyleClass().add("dashboard-left-header");
@@ -85,19 +159,10 @@ public class DashboardView {
         return row;
     }
 
-    private HBox buildBody() {
-        VBox left = buildProductsPane();
-        VBox right = buildCartPane();
-
-        left.getStyleClass().addAll("card", "dashboard-left");
-        right.getStyleClass().addAll("card", "dashboard-right");
-
-        HBox body = new HBox(20, left, right);
-        body.getStyleClass().add("dashboard-body");
-        HBox.setHgrow(left, Priority.ALWAYS);
-        VBox.setVgrow(left, Priority.ALWAYS);
-
-        return body;
+    private VBox buildProductsSection() {
+        VBox productsPane = buildProductsPane();
+        productsPane.getStyleClass().addAll("card", "dashboard-products-section");
+        return productsPane;
     }
 
     private VBox buildProductsPane() {
@@ -185,8 +250,12 @@ public class DashboardView {
             private final HBox box = new HBox(6, minus, qtyLbl, plus);
 
             {
+                minus.setText("-"); // explicit minus sign
+                plus.setText("+");  // explicit plus sign
+
                 minus.getStyleClass().add("qty-btn");
                 plus.getStyleClass().add("qty-btn");
+                qtyLbl.getStyleClass().add("qty-value");
                 box.setAlignment(Pos.CENTER);
 
                 minus.setOnAction(e -> {
@@ -265,7 +334,7 @@ public class DashboardView {
         productsTable.getColumns().setAll(colSelect, colName, colCat, colStock, colPrice, colQty);
         productsTable.setItems(productsData);
         productsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        VBox.setVgrow(productsTable, Priority.ALWAYS);
+        productsTable.setPrefHeight(420);
 
         return new VBox(10, txtSearch, productsTable);
     }
@@ -319,7 +388,7 @@ public class DashboardView {
         cartTable.getColumns().setAll(colName, colQty, colUnit, colLine, colRemove);
         cartTable.setItems(cartData);
         cartTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        VBox.setVgrow(cartTable, Priority.ALWAYS);
+        cartTable.setPrefHeight(220);
 
         lblItemsCount = new Label("ITEM: 0");
         lblItemsCount.getStyleClass().add("label-muted");
@@ -338,14 +407,28 @@ public class DashboardView {
         btnClear.setOnAction(e -> {
             clearCart();
             lblMsg.getStyleClass().removeAll("label-warning");
-            if (!lblMsg.getStyleClass().contains("label-success")) lblMsg.getStyleClass().add("label-success");
+            if (!lblMsg.getStyleClass().contains("label-success")) {
+                lblMsg.getStyleClass().add("label-success");
+            }
             lblMsg.setText("Cart cleared ✅");
         });
 
         lblMsg = new Label("");
 
-        VBox box = new VBox(10, title, cartTable, new Separator(), lblItemsCount, lblTotal, btnCheckout, btnClear, lblMsg);
-        return box;
+        VBox content = new VBox(
+                10,
+                title,
+                cartTable,
+                new Separator(),
+                lblItemsCount,
+                lblTotal,
+                btnCheckout,
+                btnClear,
+                lblMsg
+        );
+
+        content.getStyleClass().addAll("card", "dashboard-cart-section");
+        return content;
     }
 
     private void applySearch(String query) {
@@ -395,7 +478,9 @@ public class DashboardView {
     private void checkout() {
         if (cartData.isEmpty()) {
             lblMsg.getStyleClass().removeAll("label-success");
-            if (!lblMsg.getStyleClass().contains("label-warning")) lblMsg.getStyleClass().add("label-warning");
+            if (!lblMsg.getStyleClass().contains("label-warning")) {
+                lblMsg.getStyleClass().add("label-warning");
+            }
             lblMsg.setText("Cart is empty.");
             return;
         }
@@ -412,7 +497,9 @@ public class DashboardView {
 
         if (!ok) {
             lblMsg.getStyleClass().removeAll("label-success");
-            if (!lblMsg.getStyleClass().contains("label-warning")) lblMsg.getStyleClass().add("label-warning");
+            if (!lblMsg.getStyleClass().contains("label-warning")) {
+                lblMsg.getStyleClass().add("label-warning");
+            }
             lblMsg.setText("Checkout failed. Refreshing products...");
             refreshProductsOnly();
             return;
@@ -422,7 +509,9 @@ public class DashboardView {
         refreshAll();
 
         lblMsg.getStyleClass().removeAll("label-warning");
-        if (!lblMsg.getStyleClass().contains("label-success")) lblMsg.getStyleClass().add("label-success");
+        if (!lblMsg.getStyleClass().contains("label-success")) {
+            lblMsg.getStyleClass().add("label-success");
+        }
         lblMsg.setText("Checkout success ✅");
     }
 
@@ -435,6 +524,11 @@ public class DashboardView {
                         " | Low: " + s.getLowStock() +
                         " | Out: " + s.getOutStock()
         );
+
+        lblTotalValue.setText(String.valueOf(s.getTotal()));
+        lblInStockValue.setText(String.valueOf(s.getInStock()));
+        lblLowStockValue.setText(String.valueOf(s.getLowStock()));
+        lblOutStockValue.setText(String.valueOf(s.getOutStock()));
 
         lblWarn.getStyleClass().removeAll("label-warning", "label-success");
         if (s.getOutStock() > 0 || s.getLowStock() > 0) {

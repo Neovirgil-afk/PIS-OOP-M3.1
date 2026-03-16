@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -151,13 +152,16 @@ public class HistoryView {
         TableColumn<HistoryRecord, String> colName = new TableColumn<>("Product");
         colName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getProductName()));
 
-        TableColumn<HistoryRecord, String> colDetails = new TableColumn<>("Details");
+        TableColumn<HistoryRecord, String> colDetails = new TableColumn<>("Changes");
         colDetails.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDetails()));
+
+        TableColumn<HistoryRecord, String> colHandledBy = new TableColumn<>("Handled By");
+        colHandledBy.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getHandledBy()));
 
         TableColumn<HistoryRecord, String> colTime = new TableColumn<>("Time");
         colTime.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCreatedAt()));
 
-        table.getColumns().setAll(colId, colAction, colName, colDetails, colTime);
+        table.getColumns().setAll(colId, colAction, colName, colDetails, colHandledBy, colTime);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 

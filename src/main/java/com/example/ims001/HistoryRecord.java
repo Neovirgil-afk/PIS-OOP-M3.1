@@ -5,19 +5,39 @@ public class HistoryRecord {
     private final String action;
     private final String productName;
     private final String details;
+    private final String handledBy;
     private final String createdAt;
 
-    public HistoryRecord(int id, String action, String productName, String details, String createdAt) {
+    public HistoryRecord(int id, String action, String productName, String details, String handledBy, String createdAt) {
         this.id = id;
         this.action = action;
         this.productName = productName;
         this.details = details;
+        this.handledBy = handledBy;
         this.createdAt = createdAt;
     }
 
-    public int getId() { return id; }
-    public String getAction() { return action; }
-    public String getProductName() { return productName; }
-    public String getDetails() { return details; }
-    public String getCreatedAt() { return createdAt; }
+    public int getId() {
+        return id;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public String getHandledBy() {
+        return handledBy;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
 }

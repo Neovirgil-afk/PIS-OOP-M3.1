@@ -2,11 +2,26 @@ package com.example.ims001;
 
 import javafx.scene.Scene;
 
+import java.util.Objects;
+
 public class ThemeManager {
 
-    private static boolean darkMode = true; // default (change if you want)
+    private static boolean darkMode = true;
 
-    private ThemeManager() {}
+    private static final String BASE_CSS = Objects.requireNonNull(
+            ThemeManager.class.getResource("/styles.css")
+    ).toExternalForm();
+
+    private static final String DARK_CSS = Objects.requireNonNull(
+            ThemeManager.class.getResource("/dark.css")
+    ).toExternalForm();
+
+    private static final String LIGHT_CSS = Objects.requireNonNull(
+            ThemeManager.class.getResource("/light.css")
+    ).toExternalForm();
+
+    private ThemeManager() {
+    }
 
     public static boolean isDarkMode() {
         return darkMode;
@@ -19,13 +34,17 @@ public class ThemeManager {
     public static void apply(Scene scene) {
         if (scene == null) return;
 
-        scene.getStylesheets().clear();
-
-        String css = darkMode ? "/dark.css" : "/light.css";
-        var url = ThemeManager.class.getResource(css);
-        if (url != null) {
-            scene.getStylesheets().add(url.toExternalForm());
+        // keep base stylesheet
+        if (!scene.getStylesheets().contains(BASE_CSS)) {
+            scene.getStylesheets().add(BASE_CSS);
         }
+
+        // remove only theme stylesheets
+        scene.getStylesheets().remove(DARK_CSS);
+        scene.getStylesheets().remove(LIGHT_CSS);
+
+        // add the active theme
+        scene.getStylesheets().add(darkMode ? DARK_CSS : LIGHT_CSS);
     }
 
     public static void toggle(Scene scene) {

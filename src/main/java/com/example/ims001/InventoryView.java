@@ -51,15 +51,28 @@ public class InventoryView {
 
     private void buildUI() {
         VBox page = new VBox(16);
+        page.getStyleClass().add("inventory-layout");
+        page.setPadding(new Insets(4, 4, 12, 4));
+        page.setFillWidth(true);
 
         HBox toolbar = buildToolbar();
         VBox tableCard = buildTableCard();
         VBox formCard = buildFormCard();
 
         page.getChildren().addAll(toolbar, tableCard, formCard);
-        VBox.setVgrow(tableCard, Priority.ALWAYS);
 
-        AppShell shell = new AppShell(mainApp, Session.getUsername(), "inventory", "Inventory", page);
+        // Keep table nicely sized inside a scrollable page
+        tableCard.setMinHeight(420);
+        tableCard.setPrefHeight(520);
+        tableCard.setMaxHeight(Region.USE_PREF_SIZE);
+
+        ScrollPane scrollPane = new ScrollPane(page);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(false);
+        scrollPane.setPannable(true);
+        scrollPane.getStyleClass().add("inventory-scroll");
+
+        AppShell shell = new AppShell(mainApp, Session.getUsername(), "inventory", "Inventory", scrollPane);
         root = shell.getRoot();
 
         root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/app-shell.css")).toExternalForm());
@@ -93,6 +106,7 @@ public class InventoryView {
     private VBox buildTableCard() {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.setFixedCellSize(74);
+        table.setPrefHeight(500);
 
         TableColumn<Product, Integer> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(c ->
@@ -397,7 +411,9 @@ public class InventoryView {
             boolean ok = ProductDAO.add(name, cat, qty, price);
             if (ok) {
                 String tempStatus = new Product(0, name, cat, qty, price).getStatus();
-                HistoryDAO.log("ADD", name, "Added (" + qty + " pcs) | Status: " + tempStatus);
+                HistoryDAO.log("ADD", name,
+                        "Added (" + qty + " pcs) | Status: " + tempStatus,
+                        Session.getUsername());
             }
 
             status.setText(ok ? "Product added." : "Add failed.");
@@ -426,8 +442,9 @@ public class InventoryView {
 
             if (ok) {
                 String newStatus = new Product(sel.getId(), name, cat, qty, price).getStatus();
-                HistoryDAO.log("UPDATE", name, "Qty: " + oldQty + " → " + qty + " | Status: " + newStatus);
-
+                HistoryDAO.log("UPDATE", name,
+                        "Qty: " + oldQty + " → " + qty + " | Status: " + newStatus,
+                        Session.getUsername());
                 if (selectedImagePath != null && !selectedImagePath.isBlank()) {
                     ProductImageDAO.upsertImagePath(sel.getId(), selectedImagePath);
                 }
@@ -449,8 +466,9 @@ public class InventoryView {
 
         boolean ok = ProductDAO.delete(sel.getId());
         if (ok) {
-            HistoryDAO.log("DELETE", sel.getName(), "Removed product.");
-        }
+            HistoryDAO.log("DELETE", sel.getName(),
+                    "Removed product.",
+                    Session.getUsername());}
 
         status.setText(ok ? "Product removed." : "Remove failed.");
         selectedImagePath = null;

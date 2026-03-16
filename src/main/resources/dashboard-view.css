@@ -1,14 +1,17 @@
-.dashboard-body {
-    -fx-spacing: 20;
+.dashboard-page {
+    -fx-padding: 0 0 12 0;
+    -fx-spacing: 16;
 }
 
-.dashboard-left {
-    -fx-pref-width: 700;
+.dashboard-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
 }
 
-.dashboard-right {
-    -fx-pref-width: 340;
-    -fx-max-width: 360;
+.dashboard-scroll > .viewport {
+    -fx-background-color: transparent;
 }
 
 .dashboard-header-row {
@@ -25,6 +28,16 @@
     -fx-alignment: center-right;
 }
 
+.dashboard-products-section {
+    -fx-padding: 16;
+    -fx-spacing: 10;
+}
+
+.dashboard-cart-section {
+    -fx-padding: 16;
+    -fx-spacing: 10;
+}
+
 .cart-title {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
@@ -33,4 +46,178 @@
 
 .app-root.dark-view .cart-title {
     -fx-text-fill: #e2e8f0;
+}
+
+/* ===== OVERVIEW TOP SECTION ===== */
+
+.overview-wrap {
+    -fx-spacing: 14;
+}
+
+.overview-banner {
+    -fx-padding: 18 20;
+    -fx-spacing: 4;
+}
+
+.overview-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.overview-subtitle {
+    -fx-font-size: 12px;
+    -fx-opacity: 0.85;
+}
+
+.overview-stats-row {
+    -fx-spacing: 14;
+}
+
+.overview-stat-card {
+    -fx-padding: 8 14;
+    -fx-pref-height: 52;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-alignment: center-left;
+    -fx-spacing: 2;
+}
+
+.overview-stat-title {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+}
+
+.overview-stat-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+.dashboard-page {
+    -fx-padding: 0 0 12 0;
+    -fx-spacing: 16;
+}
+
+.dashboard-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.dashboard-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dashboard-header-row {
+    -fx-spacing: 18;
+    -fx-alignment: center-left;
+}
+
+.dashboard-left-header {
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+}
+
+.dashboard-summary-box {
+    -fx-alignment: center-right;
+}
+
+.dashboard-products-section {
+    -fx-padding: 16;
+    -fx-spacing: 10;
+}
+
+.dashboard-cart-section {
+    -fx-padding: 16;
+    -fx-spacing: 10;
+}
+
+.cart-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.app-root.dark-view .cart-title {
+    -fx-text-fill: #e2e8f0;
+}
+
+/* ===== OVERVIEW TOP SECTION ===== */
+
+.overview-wrap {
+    -fx-spacing: 14;
+}
+
+.overview-banner {
+    -fx-padding: 18 20;
+    -fx-spacing: 4;
+}
+
+.overview-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.overview-subtitle {
+    -fx-font-size: 12px;
+    -fx-opacity: 0.85;
+}
+
+.overview-stats-row {
+    -fx-spacing: 14;
+}
+
+.overview-stat-card {
+    -fx-padding: 8 14;
+    -fx-pref-height: 52;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-alignment: center-left;
+    -fx-spacing: 2;
+}
+
+.overview-stat-title {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+}
+
+.overview-stat-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+
+/* ===== QTY BUTTON FIX (+ / -) ===== */
+
+.qty-btn {
+    -fx-min-width: 32px;
+    -fx-pref-width: 32px;
+    -fx-max-width: 32px;
+
+    -fx-min-height: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-height: 32px;
+
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+    -fx-alignment: center;
+    -fx-padding: 0;
+}
+
+/* Dark mode text color */
+.app-root.dark-view .qty-btn {
+    -fx-text-fill: white;
+}
+
+/* Quantity number in the middle */
+
+.qty-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222222;
+}
+
+.app-root.dark-view .qty-value {
+    -fx-text-fill: white;
 }

@@ -26,3 +26,17 @@
 .app-root.dark-view .inventory-status {
     -fx-text-fill: #cbd5e1;
 }
+
+/* full-page scroll */
+.inventory-scroll {
+    -fx-background-color: transparent;
+    -fx-fit-to-width: true;
+}
+
+.inventory-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.inventory-scroll > .corner {
+    -fx-background-color: transparent;
+}

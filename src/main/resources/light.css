@@ -68,3 +68,96 @@
 .separator .line {
     -fx-border-color: rgba(0,0,0,0.12);
 }
+
+/* ---------- AUTH / GLASS ---------- */
+.glass-card {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+    -fx-border-color: rgba(255, 255, 255, 0.32);
+    -fx-border-width: 1;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.18), 22, 0.25, 0, 8);
+}
+
+.auth-brand {
+    -fx-text-fill: #0F172A;
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+}
+
+.auth-title {
+    -fx-text-fill: #0F172A;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.auth-sub {
+    -fx-text-fill: rgba(15, 23, 42, 0.62);
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.field-label {
+    -fx-text-fill: rgba(15, 23, 42, 0.86);
+    -fx-font-weight: bold;
+    -fx-padding: 2 0 0 0;
+}
+
+.btn {
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 10 14;
+    -fx-font-weight: bold;
+    -fx-border-width: 1;
+}
+
+.btn-primary {
+    -fx-background-color: rgba(37, 99, 235, 0.94);
+    -fx-border-color: rgba(37, 99, 235, 0.10);
+    -fx-text-fill: white;
+}
+
+.btn-primary:hover {
+    -fx-background-color: rgba(37, 99, 235, 1.0);
+}
+
+.btn-ghost {
+    -fx-background-color: rgba(255, 255, 255, 0.92);
+    -fx-border-color: rgba(15, 23, 42, 0.10);
+    -fx-text-fill: rgba(15, 23, 42, 0.86);
+}
+
+.btn-ghost:hover {
+    -fx-background-color: rgba(15, 23, 42, 0.06);
+}
+
+.auth-btn {
+    -fx-pref-width: 150;
+    -fx-pref-height: 38;
+    -fx-min-width: 150;
+    -fx-min-height: 38;
+}
+
+.ctl {
+    -fx-text-fill: #0F172A;
+}
+
+.link {
+    -fx-text-fill: #0EA5E9;
+}
+
+.chk {
+    -fx-text-fill: #0F172A;
+}
+
+.msg {
+    -fx-text-fill: #0F172A;
+}
+
+.msg-err {
+    -fx-text-fill: #E11D48;
+}
+
+.msg-ok {
+    -fx-text-fill: #059669;
+}

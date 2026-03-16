@@ -1,166 +1,131 @@
 package com.example.ims001;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 public class LoginView {
 
-    private MainApp mainApp;
-    private StackPane root;
+    private final MainApp mainApp;
+    private final StackPane root = new StackPane();
 
     private TextField txtUsername;
     private PasswordField txtPassword;
     private TextField txtPasswordText;
-    private Label lblMessage;
     private CheckBox showPassword;
+    private Label lblMessage;
 
     public LoginView(MainApp mainApp) {
         this.mainApp = mainApp;
 
-        root = new StackPane();
-        root.getStyleClass().add("login-root");
+        root.getStyleClass().add("auth-root");
 
-        //Background
-        Image bgGif = new Image(getClass().getResource("/images/blackbg.jpg").toExternalForm());
-        ImageView bgView = new ImageView(bgGif);
+        Image bg = new Image(getClass().getResource("/images/blackbg.jpg").toExternalForm());
+        ImageView bgView = new ImageView(bg);
         bgView.setFitWidth(1920);
         bgView.setFitHeight(1080);
         bgView.setPreserveRatio(false);
-        bgView.setOpacity(0.3);
+        bgView.setOpacity(0.35);
 
-        //Main HBox with left and right cards
-        HBox mainBox = new HBox();
-        mainBox.setAlignment(Pos.CENTER);
-        mainBox.setSpacing(0);
+        BorderPane overlay = new BorderPane();
+        overlay.setPadding(new Insets(24));
 
-        VBox leftCard = createLeftCard();
-        VBox rightCard = createLoginCard();
+        Button themeBtn = new Button(ThemeManager.isDarkMode() ? "☀" : "🌙");
+        themeBtn.getStyleClass().addAll("btn", "btn-ghost");
+        themeBtn.setOnAction(e -> {
+            if (root.getScene() != null) {
+                ThemeManager.toggle(root.getScene());
+                themeBtn.setText(ThemeManager.isDarkMode() ? "☀" : "🌙");
+            }
+        });
 
-        mainBox.getChildren().addAll(leftCard, rightCard);
+        HBox topRight = new HBox(themeBtn);
+        topRight.setAlignment(Pos.TOP_RIGHT);
+        overlay.setTop(topRight);
 
-        root.getChildren().addAll(bgView, mainBox);
+        HBox shell = new HBox(18);
+        shell.setAlignment(Pos.CENTER);
+
+        StackPane left = FxGlass.glassCard(authLeftBlock());
+        left.getStyleClass().add("auth-left");
+        left.setPrefWidth(520);
+
+        StackPane right = FxGlass.glassCard(authLoginBlock());
+        right.getStyleClass().add("auth-right");
+        right.setPrefWidth(520);
+
+        shell.getChildren().addAll(left, right);
+        overlay.setCenter(shell);
+
+        root.getChildren().addAll(bgView, overlay);
     }
 
-    private VBox createLeftCard() {
-        VBox leftCard = new VBox();
-        leftCard.setPrefWidth(500);
-        leftCard.setAlignment(Pos.CENTER);
-        leftCard.getStyleClass().addAll("left-card", "frosted-glass");
+    private VBox authLeftBlock() {
+        ImageView logoView = null;
+        try {
+            Image logo = new Image(getClass().getResource("/images/malopitang logo .png").toExternalForm());
+            logoView = new ImageView(logo);
+            logoView.setFitWidth(280);
+            logoView.setFitHeight(280);
+            logoView.setPreserveRatio(true);
+            logoView.setSmooth(true);
+        } catch (Exception e) {
+            System.out.println("Logo image not found: /images/malopitang logo .png");
+        }
 
-        //Inner black box
-        StackPane innerBox = new StackPane();
-        innerBox.getStyleClass().addAll("inner-black-box");
+        Label brand = new Label("Prestige\nInventory Suites");
+        brand.getStyleClass().add("auth-brand");
 
-        // Make innerBox responsive to leftCard size
-        innerBox.prefWidthProperty().bind(leftCard.widthProperty().multiply(0.9));
-        innerBox.prefHeightProperty().bind(leftCard.heightProperty().multiply(0.8));
-        innerBox.setAlignment(Pos.BOTTOM_CENTER);
+        Label sub = new Label("Welcome to Inventory Management System");
+        sub.getStyleClass().add("auth-sub");
 
-        //Text container inside black box
-        VBox textContainer = new VBox(10);
-        textContainer.setAlignment(Pos.BOTTOM_CENTER);
-        textContainer.setStyle("-fx-padding: 20;");
+        VBox box;
+        if (logoView != null) {
+            box = new VBox(18, logoView, brand, sub);
+        } else {
+            box = new VBox(10, brand, sub);
+        }
 
-        //Logo placeholder
-        Label logo = new Label(" *"); // placeholder logo
-        logo.getStyleClass().add("inner-title");
-        logo.setStyle("-fx-text-fill: #03DE82; -fx-font-size: 100px; -fx-font-weight: bold;" );
-        StackPane.setAlignment(logo, Pos.TOP_LEFT);
-        StackPane.setMargin(logo, new javafx.geometry.Insets(15, 0, 0, 15)); // top-left margin
-
-        //title
-        Label title = new Label("Prestige Inventory Suites");
-        title.getStyleClass().add("inner-title");
-        title.styleProperty().bind(
-                innerBox.heightProperty().multiply(0.035).asString(
-                        "-fx-text-fill: #03DE82; -fx-font-weight: bold; -fx-font-family: Inter; -fx-font-size: %.0fpx;"
-                )
-        );
-        title.setMaxWidth(Double.MAX_VALUE);
-        VBox.setMargin(title, new javafx.geometry.Insets(0,0,0,10));
-        title.setAlignment(Pos.CENTER_LEFT);
-
-        //description
-        Label description = new Label(
-                "This is a powerful inventory management app. " +
-                        "Keep track of your stock effortlessly. " +
-                        "Designed to make your business operations smooth."
-        );
-        description.getStyleClass().add("inner-description");
-        description.setWrapText(true);
-        description.styleProperty().bind(
-                innerBox.heightProperty().multiply(0.03).asString(
-                        "-fx-text-fill: #03DE82; -fx-font-family: Inter; -fx-font-size: %.0fpx;"
-                )
-        );
-        description.maxWidthProperty().bind(innerBox.widthProperty().multiply(0.85));
-        description.setAlignment(Pos.CENTER);
-
-        // Added title and description to text container
-        textContainer.getChildren().addAll(title, description);
-
-        // Addd logo and text container to inner box
-        innerBox.getChildren().addAll(logo, textContainer);
-
-        // Adde inner box to left card
-        leftCard.getChildren().add(innerBox);
-        VBox.setVgrow(innerBox, javafx.scene.layout.Priority.ALWAYS);
-
-        return leftCard;
+        box.setAlignment(Pos.CENTER);
+        box.setPadding(new Insets(26));
+        return box;
     }
 
+    private VBox authLoginBlock() {
+        Label title = new Label("Sign In");
+        title.getStyleClass().add("auth-title");
 
+        Label subtitle = new Label("Enter your credentials to continue.");
+        subtitle.getStyleClass().add("auth-sub");
 
-
-
-
-
-    private VBox createLoginCard() {
-        VBox rightCard = new VBox(12);
-        rightCard.setPrefWidth(700);
-        rightCard.setAlignment(Pos.CENTER_LEFT);
-        rightCard.getStyleClass().add("right-card");
-
-        Label title = new Label("Login form");
-        title.getStyleClass().add("title");
-
-        Label quote = new Label("“Know what you have, sell with confidence, and never run out unexpectedly.”");
-        quote.getStyleClass().add("title_2");
-        quote.setWrapText(true);
-
-        Label user = new Label("Username");
-        user.getStyleClass().add("title_3");
+        Label uLbl = new Label("Username");
+        uLbl.getStyleClass().add("field-label");
 
         txtUsername = new TextField();
-        txtUsername.setPromptText("Enter your Username");
-        txtUsername.setMaxWidth(480);
-        txtUsername.getStyleClass().add("input-field");
+        txtUsername.setPromptText("Enter username");
+        txtUsername.getStyleClass().add("ctl");
 
-        Label pass = new Label("Password");
-        pass.getStyleClass().add("title_3");
+        Label pLbl = new Label("Password");
+        pLbl.getStyleClass().add("field-label");
 
         txtPassword = new PasswordField();
-        txtPassword.setPromptText("Enter your Password");
-        txtPassword.setMaxWidth(480);
-        txtPassword.getStyleClass().add("input-field");
+        txtPassword.setPromptText("Enter password");
+        txtPassword.getStyleClass().add("ctl");
 
         txtPasswordText = new TextField();
-        txtPasswordText.setPromptText("Enter your Password");
-        txtPasswordText.setMaxWidth(480);
-        txtPasswordText.getStyleClass().add("input-field");
+        txtPasswordText.setPromptText("Enter password");
+        txtPasswordText.getStyleClass().add("ctl");
         txtPasswordText.setVisible(false);
         txtPasswordText.setManaged(false);
 
         txtPassword.textProperty().bindBidirectional(txtPasswordText.textProperty());
 
         showPassword = new CheckBox("Show Password");
-        showPassword.getStyleClass().add("pass-button");
+        showPassword.getStyleClass().add("chk");
         showPassword.setOnAction(e -> {
             boolean show = showPassword.isSelected();
             txtPassword.setVisible(!show);
@@ -169,65 +134,68 @@ public class LoginView {
             txtPasswordText.setManaged(show);
         });
 
-        Button btnForgot = new Button("Forgot Password?");
-        btnForgot.getStyleClass().add("link-button");
-        btnForgot.setOnAction(e -> mainApp.showForgotPasswordView());
+        Hyperlink forgot = new Hyperlink("Forgot password?");
+        forgot.getStyleClass().add("link");
+        forgot.setOnAction(e -> mainApp.showForgotPasswordView());
 
-        // Show password + forgot password on same row
-        HBox passwordRow = new HBox(200);
-        passwordRow.setAlignment(Pos.CENTER_LEFT);
-        passwordRow.getChildren().addAll(showPassword, btnForgot);
-
-        Button btnLogin = new Button("Get Started");
-        btnLogin.getStyleClass().add("primary-button");
+        Button btnLogin = new Button("Sign In");
+        btnLogin.getStyleClass().addAll("btn", "btn-primary", "auth-btn");
+        btnLogin.setMaxWidth(Double.MAX_VALUE);
         btnLogin.setOnAction(e -> handleLogin());
 
-        Button btnRegister = new Button("Sign up");
-        btnRegister.getStyleClass().add("secondary-button");
+        Button btnRegister = new Button("Create Account");
+        btnRegister.getStyleClass().addAll("btn", "btn-ghost", "auth-btn");
+        btnRegister.setMaxWidth(Double.MAX_VALUE);
         btnRegister.setOnAction(e -> mainApp.showRegisterView());
 
         lblMessage = new Label();
-        lblMessage.getStyleClass().add("message-label");
+        lblMessage.getStyleClass().add("msg");
 
-        rightCard.getChildren().addAll(
-                title,
-                quote,
-                user,
-                txtUsername,
-                pass,
-                txtPassword,
-                txtPasswordText,
-                passwordRow,
-                btnLogin,
-                btnRegister,
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox row = new HBox(10, showPassword, spacer, forgot);
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        VBox box = new VBox(
+                12,
+                title, subtitle,
+                uLbl, txtUsername,
+                pLbl, txtPassword, txtPasswordText,
+                row,
+                btnLogin, btnRegister,
                 lblMessage
         );
 
-        return rightCard;
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setPadding(new Insets(26));
+        return box;
     }
 
     private void handleLogin() {
-        String username = txtUsername.getText();
-        String password = txtPassword.getText();
+        String u = txtUsername.getText() == null ? "" : txtUsername.getText().trim();
+        String p = showPassword.isSelected()
+                ? (txtPasswordText.getText() == null ? "" : txtPasswordText.getText())
+                : (txtPassword.getText() == null ? "" : txtPassword.getText());
 
-        if (username.isEmpty() || password.isEmpty()) {
-            lblMessage.setText("Username and password cannot be empty.");
-            lblMessage.getStyleClass().setAll("message-error");
+        if (u.isBlank() || p.isBlank()) {
+            setMsg("All fields are required.", true);
             return;
         }
 
-        if (UserDAO.login(username, password)) {
-            lblMessage.setText("Login successful!");
-            lblMessage.getStyleClass().setAll("message-success");
-
-            Session.setUsername(username); // ✅ ADD THIS
-            mainApp.showDashboardView(username);
-
+        boolean ok = UserDAO.login(u, p);
+        if (ok) {
+            Session.setUsername(u);
+            mainApp.showDashboardView(u);
         } else {
-            lblMessage.setText("Invalid username or password.");
-            lblMessage.getStyleClass().setAll("message-error");
+            setMsg("Invalid username or password.", true);
         }
+    }
 
+    private void setMsg(String msg, boolean err) {
+        lblMessage.setText(msg);
+        lblMessage.getStyleClass().removeAll("msg-err", "msg-ok");
+        lblMessage.getStyleClass().add(err ? "msg-err" : "msg-ok");
     }
 
     public Parent getView() {

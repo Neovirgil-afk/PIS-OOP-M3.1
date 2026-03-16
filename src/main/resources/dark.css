@@ -61,7 +61,8 @@
     -fx-background-color: rgba(255,255,255,0.08);
 }
 
-.table-view .column-header, .table-view .filler {
+.table-view .column-header,
+.table-view .filler {
     -fx-size: 32px;
     -fx-border-color: rgba(255,255,255,0.08);
     -fx-background-color: transparent;
@@ -96,4 +97,97 @@
 /* Separators */
 .separator .line {
     -fx-border-color: rgba(255,255,255,0.12);
+}
+
+/* ---------- AUTH / GLASS ---------- */
+.glass-card {
+    -fx-background-color: rgba(15, 23, 42, 0.40);
+    -fx-border-color: rgba(148, 163, 184, 0.18);
+    -fx-border-width: 1;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.42), 18, 0.22, 0, 7);
+}
+
+.auth-brand {
+    -fx-text-fill: #F3F7FF;
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+}
+
+.auth-title {
+    -fx-text-fill: #F3F7FF;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.auth-sub {
+    -fx-text-fill: rgba(243, 247, 255, 0.78);
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.field-label {
+    -fx-text-fill: rgba(243, 247, 255, 0.90);
+    -fx-font-weight: bold;
+    -fx-padding: 2 0 0 0;
+}
+
+.btn {
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 10 14;
+    -fx-font-weight: bold;
+    -fx-border-width: 1;
+}
+
+.btn-primary {
+    -fx-background-color: rgba(59, 130, 246, 0.92);
+    -fx-border-color: rgba(59, 130, 246, 0.10);
+    -fx-text-fill: white;
+}
+
+.btn-primary:hover {
+    -fx-background-color: rgba(59, 130, 246, 1.0);
+}
+
+.btn-ghost {
+    -fx-background-color: rgba(15, 23, 42, 0.72);
+    -fx-border-color: rgba(148, 163, 184, 0.18);
+    -fx-text-fill: rgba(243, 247, 255, 0.92);
+}
+
+.btn-ghost:hover {
+    -fx-background-color: rgba(148, 163, 184, 0.12);
+}
+
+.auth-btn {
+    -fx-pref-width: 150;
+    -fx-pref-height: 38;
+    -fx-min-width: 150;
+    -fx-min-height: 38;
+}
+
+.ctl {
+    -fx-text-fill: #F3F7FF;
+}
+
+.link {
+    -fx-text-fill: #38BDF8;
+}
+
+.chk {
+    -fx-text-fill: #F3F7FF;
+}
+
+.msg {
+    -fx-text-fill: #F3F7FF;
+}
+
+.msg-err {
+    -fx-text-fill: #FB7185;
+}
+
+.msg-ok {
+    -fx-text-fill: #34D399;
 }

@@ -57,7 +57,6 @@ public class ProductDAO {
         return list;
     }
 
-    // Alias if other parts call getAllProducts()
     public static List<Product> getAllProducts() {
         return getAllByNameAsc();
     }
@@ -166,7 +165,7 @@ public class ProductDAO {
     // SELL CART
     // - Updates stock safely
     // - Writes sales + sales_items
-    // - Writes history logs
+    // - Writes history logs with handled_by
     // =========================
     public static boolean sellCart(List<CartItem> cart, String username) {
         if (cart == null || cart.isEmpty()) return false;
@@ -188,8 +187,8 @@ public class ProductDAO {
                 """;
 
         String insertHistory = """
-                INSERT INTO history(action, item_id, product_name, details, created_at)
-                VALUES (?, NULL, ?, ?, CURRENT_TIMESTAMP)
+                INSERT INTO history(action, product_name, details, handled_by, created_at)
+                VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
                 """;
 
         Connection con = null;
@@ -209,8 +208,6 @@ public class ProductDAO {
                 totalItems += item.getQuantity();
                 totalAmount += item.getLineTotal();
             }
-
-            Integer userId = UserDAO.getUserIdByUsername(username);
 
             // 1) Insert sales header and get sale_id
             int saleId;
@@ -258,19 +255,18 @@ public class ProductDAO {
                     ps.executeUpdate();
                 }
 
-                // history log with user info
+                // history row
                 String details =
-                        "Handled By: " + username +
-                                " | User ID: " + (userId != null ? userId : "N/A") +
-                                " | Type: Stock Out" +
-                                " | Purpose: SALE" +
-                                " | Qty: " + qty +
+                        "Qty: " + qty +
+                                " | Unit Price: ₱" + String.format("%.2f", item.getUnitPrice()) +
+                                " | Total: ₱" + String.format("%.2f", item.getLineTotal()) +
                                 " | SaleID: " + saleId;
 
                 try (PreparedStatement ps = con.prepareStatement(insertHistory)) {
                     ps.setString(1, "STOCK_OUT_SALE");
                     ps.setString(2, item.getName());
                     ps.setString(3, details);
+                    ps.setString(4, username);
                     ps.executeUpdate();
                 }
             }

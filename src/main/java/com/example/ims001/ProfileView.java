@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.net.URL;
 
 public class ProfileView {
 
@@ -45,6 +46,7 @@ public class ProfileView {
         imageView.setFitWidth(140);
         imageView.setFitHeight(140);
         imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
 
         loadProfileImage(profileImagePath);
 
@@ -134,13 +136,32 @@ public class ProfileView {
                 }
             }
 
-            imageView.setImage(new Image(getClass().getResource("/default-profile.png").toExternalForm()));
+            URL resource = getClass().getResource("/images/default-profile.png");
+            if (resource != null) {
+                imageView.setImage(new Image(resource.toExternalForm()));
+                return;
+            }
+
+            resource = getClass().getResource("/default-profile.png");
+            if (resource != null) {
+                imageView.setImage(new Image(resource.toExternalForm()));
+                return;
+            }
+
+            imageView.setImage(null);
+            System.out.println("Default profile image not found.");
         } catch (Exception e) {
             e.printStackTrace();
+            imageView.setImage(null);
         }
     }
 
     private void chooseImage() {
+        if (root.getScene() == null || root.getScene().getWindow() == null) {
+            showMsg("Window is not ready.", "orange");
+            return;
+        }
+
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Choose Profile Picture");
         chooser.getExtensionFilters().add(

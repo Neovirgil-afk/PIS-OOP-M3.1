@@ -5,6 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
 public class AppShell {
@@ -52,13 +54,36 @@ public class AppShell {
     }
 
     private void buildSidebar(String activeNav) {
-        Label logo = new Label("IMS");
+        ImageView logoIcon = null;
+
+        try {
+            Image logoImg = new Image(getClass().getResource("/images/malopitang logo .png").toExternalForm());
+            logoIcon = new ImageView(logoImg);
+            logoIcon.setFitWidth(50);
+            logoIcon.setFitHeight(50);
+            logoIcon.setPreserveRatio(true);
+            logoIcon.setSmooth(true);
+        } catch (Exception e) {
+            System.out.println("Logo not found: /images/malopitang logo .png");
+        }
+
+        Label logo = new Label("PIS");
         logo.getStyleClass().add("logo-label");
 
         Label sub = new Label("Inventory System");
         sub.getStyleClass().add("logo-sub");
 
-        VBox brand = new VBox(0, logo, sub);
+        VBox textBlock = new VBox(0, logo, sub);
+        textBlock.setAlignment(Pos.CENTER_LEFT);
+
+        HBox brand;
+        if (logoIcon != null) {
+            brand = new HBox(10, logoIcon, textBlock);
+        } else {
+            brand = new HBox(textBlock);
+        }
+
+        brand.setAlignment(Pos.CENTER_LEFT);
         brand.getStyleClass().add("brand-box");
 
         Button btnHome = createNavButton("Home", "home".equalsIgnoreCase(activeNav));
